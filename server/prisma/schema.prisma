@@ -1,0 +1,62 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        Int       @id @default(autoincrement())
+  email     String    @unique
+  password  String
+  tier      UserTier  @default(BASIC)
+  folders   Folder[]
+  tokens    Token[]
+  quotes    Quote[]
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+}
+
+model Folder {
+  id           Int       @id @default(autoincrement())
+  name         String
+  userId       Int
+  user         User      @relation(fields: [userId], references: [id])
+  parentId     Int?
+  parent       Folder?   @relation("SubFolders", fields: [parentId], references: [id])
+  subFolders   Folder[]  @relation("SubFolders")
+  quotes       Quote[]
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+}
+
+model Quote {
+  id              Int       @id @default(autoincrement())
+  content         String
+  userId          Int
+  user            User      @relation(fields: [userId], references: [id])
+  folderId        Int?
+  folder          Folder?   @relation(fields: [folderId], references: [id])
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+}
+
+model Token {
+  id        Int      @id @default(autoincrement())
+  token     String   @unique
+  userId    Int
+  user      User     @relation(fields: [userId], references: [id])
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+}
+
+enum UserTier {
+  BASIC
+  PREMIUM
+  ENTERPRISE
+}
