@@ -1,0 +1,284 @@
+@import url("https://fonts.googleapis.com/css2?family=Merriweather:wght@400&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Crimson+Text:wght@400&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@400&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Courier+Prime&display=swap");
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+.bubble {
+  background-image: url("../public/images/Bubble-Ellipse--Streamline-Beveled-Scribbles.svg");
+  background-position: center;
+  background-size: contain;
+  background-repeat: no-repeat;
+  position: absolute;
+}
+
+.ql-toolbar {
+  border: none !important;
+  background-color: #f8f8f8 !important;
+  font-family: "Poppins", sans-serif !important;
+}
+
+.ql-toolbar .ql-formats:nth-of-type(3) {
+  width: 140px !important;
+}
+
+.ql-toolbar .ql-formats:nth-of-type(3) .ql-picker-label {
+  display: flex !important;
+  justify-content: space-between !important;
+  align-items: center; /* Vertically center items */
+  width: 140px !important; /* Ensure width is set on the label */
+}
+
+.ql-toolbar .ql-formats:nth-of-type(3) .ql-picker-label::before {
+  content: ""; /* Ensure content is set */
+  flex: 1; /* Allow to take remaining space */
+}
+
+.ql-toolbar .ql-formats:nth-of-type(3) .ql-picker-label svg {
+  margin-right: 5px !important; /* Add right margin to the SVG */
+}
+
+.ql-toolbar .ql-formats:not(:last-child) {
+  border-right: 1px solid #dcdcdc !important;
+  padding-right: 12px !important;
+}
+
+.ql-container {
+  font-family: "Lato", sans-serif !important;
+  border: none !important;
+
+  height: unset !important;
+}
+.ql-editor {
+  height: 200px !important;
+  padding: 8px 12px !important;
+  color: #1d1c1d !important;
+  font-weight: 400 !important;
+  font-family: "Poppins", sans-serif !important;
+  font-size: 22px !important;
+}
+
+.ql-editor a {
+  color: #1264a3 !important;
+}
+
+.ql-editor a:hover {
+  text-decoration: underline !important;
+}
+
+.ql-editor p {
+  font-size: 22px !important;
+}
+
+.ql-renderer {
+  padding: 0 !important;
+}
+
+.ql-editor::before {
+  left: 12px !important;
+  font-family: "Poppins", sans-serif !important;
+  color: #8d8d8d !important;
+  font-style: normal !important;
+  font-size: 22px !important;
+  font-weight: 400 !important;
+  @apply truncate;
+}
+
+.ql-picker-options {
+  z-index: 100 !important;
+  height: 200px !important;
+  overflow-y: auto !important;
+}
+
+.ql-snow .ql-picker.ql-font .ql-picker-label[data-value="merriweather"]::before,
+.ql-snow .ql-picker.ql-font .ql-picker-item[data-value="merriweather"]::before {
+  font-family: "Merriweather", serif;
+  content: "Merriweather";
+}
+
+.ql-snow .ql-picker.ql-font .ql-picker-label[data-value="playfair"]::before,
+.ql-snow .ql-picker.ql-font .ql-picker-item[data-value="playfair"]::before {
+  font-family: "Playfair Display", serif;
+  content: "Playfair";
+}
+
+.ql-snow .ql-picker.ql-font .ql-picker-label[data-value="crimson"]::before,
+.ql-snow .ql-picker.ql-font .ql-picker-item[data-value="crimson"]::before {
+  font-family: "Crimson Text", serif;
+  content: "Crimson";
+}
+
+.ql-snow .ql-picker.ql-font .ql-picker-label[data-value="poppins"]::before,
+.ql-snow .ql-picker.ql-font .ql-picker-item[data-value="poppins"]::before {
+  font-family: "Poppins", sans-serif;
+  content: "Poppins";
+}
+
+.ql-font-merriweather {
+  font-family: "Merriweather", serif;
+}
+
+.ql-font-playfair {
+  font-family: "Playfair Display", serif;
+}
+
+.ql-font-crimson {
+  font-family: "Crimson Text", serif;
+}
+
+.ql-font-poppins {
+  font-family: "Poppins", sans-serif;
+}
+
+.ql-snow .ql-picker.ql-font .ql-picker-label[data-value="arial"]::before,
+.ql-snow .ql-picker.ql-font .ql-picker-item[data-value="arial"]::before {
+  font-family: Arial, sans-serif;
+  content: "Arial";
+}
+
+.ql-snow .ql-picker.ql-font .ql-picker-label[data-value="helvetica"]::before,
+.ql-snow .ql-picker.ql-font .ql-picker-item[data-value="helvetica"]::before {
+  font-family: Helvetica, sans-serif;
+  content: "Helvetica";
+}
+
+.ql-snow
+  .ql-picker.ql-font
+  .ql-picker-label[data-value="times-new-roman"]::before,
+.ql-snow
+  .ql-picker.ql-font
+  .ql-picker-item[data-value="times-new-roman"]::before {
+  font-family: "Times New Roman", serif;
+  content: "Times New Roman";
+}
+
+.ql-snow .ql-picker.ql-font .ql-picker-label[data-value="courier-new"]::before,
+.ql-snow .ql-picker.ql-font .ql-picker-item[data-value="courier-new"]::before {
+  font-family: "Courier New", monospace;
+  content: "Courier New";
+}
+
+.ql-snow .ql-picker.ql-font .ql-picker-label[data-value="georgia"]::before,
+.ql-snow .ql-picker.ql-font .ql-picker-item[data-value="georgia"]::before {
+  font-family: Georgia, serif;
+  content: "Georgia";
+}
+
+.ql-snow .ql-picker.ql-font .ql-picker-label[data-value="palatino"]::before,
+.ql-snow .ql-picker.ql-font .ql-picker-item[data-value="palatino"]::before {
+  font-family: "Palatino Linotype", "Book Antiqua", Palatino, serif;
+  content: "Palatino";
+}
+
+.ql-snow .ql-picker.ql-font .ql-picker-label[data-value="garamond"]::before,
+.ql-snow .ql-picker.ql-font .ql-picker-item[data-value="garamond"]::before {
+  font-family: Garamond, serif;
+  content: "Garamond";
+}
+
+.ql-snow .ql-picker.ql-font .ql-picker-label[data-value="bookman"]::before,
+.ql-snow .ql-picker.ql-font .ql-picker-item[data-value="bookman"]::before {
+  font-family: "Bookman Old Style", serif;
+  content: "Bookman";
+}
+
+.ql-snow .ql-picker.ql-font .ql-picker-label[data-value="comic-sans"]::before,
+.ql-snow .ql-picker.ql-font .ql-picker-item[data-value="comic-sans"]::before {
+  font-family: "Comic Sans MS", cursive;
+  content: "Comic Sans";
+}
+
+.ql-snow .ql-picker.ql-font .ql-picker-label[data-value="trebuchet"]::before,
+.ql-snow .ql-picker.ql-font .ql-picker-item[data-value="trebuchet"]::before {
+  font-family: "Trebuchet MS", sans-serif;
+  content: "Trebuchet";
+}
+
+.ql-snow .ql-picker.ql-font .ql-picker-label[data-value="arial-black"]::before,
+.ql-snow .ql-picker.ql-font .ql-picker-item[data-value="arial-black"]::before {
+  font-family: "Arial Black", sans-serif;
+  content: "Arial Black";
+}
+
+.ql-snow .ql-picker.ql-font .ql-picker-label[data-value="impact"]::before,
+.ql-snow .ql-picker.ql-font .ql-picker-item[data-value="impact"]::before {
+  font-family: Impact, Charcoal, sans-serif;
+  content: "Impact";
+}
+
+/* Add corresponding classes for the new fonts */
+.ql-font-arial {
+  font-family: Arial, sans-serif;
+}
+.ql-font-helvetica {
+  font-family: Helvetica, sans-serif;
+}
+.ql-font-times-new-roman {
+  font-family: "Times New Roman", serif;
+}
+.ql-font-courier-new {
+  font-family: "Courier New", monospace;
+}
+.ql-font-georgia {
+  font-family: Georgia, serif;
+}
+.ql-font-palatino {
+  font-family: "Palatino Linotype", "Book Antiqua", Palatino, serif;
+}
+.ql-font-garamond {
+  font-family: Garamond, serif;
+}
+.ql-font-bookman {
+  font-family: "Bookman Old Style", serif;
+}
+.ql-font-comic-sans {
+  font-family: "Comic Sans MS", cursive;
+}
+.ql-font-trebuchet {
+  font-family: "Trebuchet MS", sans-serif;
+}
+.ql-font-arial-black {
+  font-family: "Arial Black", sans-serif;
+}
+.ql-font-impact {
+  font-family: Impact, Charcoal, sans-serif;
+}
+
+@layer utilities {
+  .line-clamp-custom {
+    display: -webkit-box;
+    line-clamp: 3;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+}
+
+.no-visible-scrollbar {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  -webkit-overflow-scrolling: touch;
+}
+
+.no-visible-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+.grainy {
+  background: url("../public/download.png");
+}
+
+.leaves {
+  background: url("../public/leaves.svg");
+}
