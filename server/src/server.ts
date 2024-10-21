@@ -6,7 +6,8 @@ import cookieParser from "cookie-parser";
 import userRoutes from "./routes/userRoutes.ts";
 import authRoutes from "./routes/authRoutes.ts";
 import quoteRoutes from "./routes/quoteRoutes.ts";
-import folderRoute from "./routes/folderRoutes.ts";
+import folderRoutes from "./routes/folderRoutes.ts";
+import tagRoutes from "./routes/tagRoutes.ts";
 
 // Initialize the Express app
 const app = express();
@@ -30,7 +31,8 @@ app.use(
 app.use("/api/auth", authRoutes);
 app.use("/api/users", userRoutes);
 app.use("/api/quotes", quoteRoutes);
-app.use("/api/folders", folderRoute);
+app.use("/api/folders", folderRoutes);
+app.use("/api/tags", tagRoutes);
 
 // Error handling middleware (uncomment and implement)
 // app.use(errorHandler);

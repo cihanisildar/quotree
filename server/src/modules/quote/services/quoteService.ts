@@ -1,12 +1,29 @@
+import { Tag } from "@prisma/client";
 import prisma from "../../../../prisma/prisma.ts";
 import { Quote } from "../models/Quote.ts";
 
 export class QuoteService {
-  async createQuote(userId: number, folderId: number, content: string): Promise<Quote> {
+  async createQuote(
+    userId: number,
+    folderId: number,
+    content: string,
+    tagIds: number[]
+  ): Promise<Quote> {
     try {
       const quote = await prisma.quote.create({
-        data: { userId, folderId, content },
-        include: { folder: true, user: true },
+        data: {
+          userId,
+          folderId,
+          content,
+          tags: {
+            connect: tagIds.map((id) => ({ id })), // Connect using the IDs directly
+          },
+        },
+        include: {
+          folder: true,
+          user: true,
+          tags: true,
+        },
       });
       return this.mapToQuoteModel(quote);
     } catch (error) {
@@ -18,13 +35,12 @@ export class QuoteService {
     try {
       const quotes = await prisma.quote.findMany({
         where: { userId },
-        include: { folder: true, user: true },
-        orderBy: { createdAt: 'desc' },
+        include: { folder: true, user: true, tags: true },
+        orderBy: { createdAt: "desc" },
       });
       return quotes.map(this.mapToQuoteModel);
     } catch (error) {
       this.handlePrismaError(error, "Failed to fetch quotes");
-      return [];
     }
   }
 
@@ -32,7 +48,7 @@ export class QuoteService {
     try {
       const quote = await prisma.quote.findUnique({
         where: { id },
-        include: { folder: true, user: true },
+        include: { folder: true, user: true, tags: true },
       });
       return quote ? this.mapToQuoteModel(quote) : null;
     } catch (error) {
@@ -41,7 +57,22 @@ export class QuoteService {
     }
   }
 
-  async updateQuote(id: number, data: Partial<Omit<Quote, "id" | "userId" | "folderId" | "user" | "folder" | "createdAt" | "updatedAt">>): Promise<Quote> {
+  async updateQuote(
+    id: number,
+    data: Partial<
+      Omit<
+        Quote,
+        | "id"
+        | "userId"
+        | "folderId"
+        | "user"
+        | "folder"
+        | "createdAt"
+        | "updatedAt"
+        | "tags"
+      >
+    >
+  ): Promise<Quote> {
     try {
       const updatedQuote = await prisma.quote.update({
         where: { id },
@@ -72,17 +103,18 @@ export class QuoteService {
       folder: prismaQuote.folder,
       createdAt: prismaQuote.createdAt,
       updatedAt: prismaQuote.updatedAt,
+      tags: prismaQuote.tags
     };
   }
 
   private handlePrismaError(error: unknown, message: string): never {
     if (error instanceof Error) {
       const prismaError = error as { code?: string };
-      if (prismaError.code === 'P2025') {
+      if (prismaError.code === "P2025") {
         throw new Error("Record not found");
       }
     }
-    
+
     console.error(error);
     throw new Error(message);
   }

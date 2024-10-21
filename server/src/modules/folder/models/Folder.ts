@@ -8,7 +8,7 @@ export interface Folder {
   user: User;
   parentId: number | null;
   parent?: Folder | null;
-  subFolders: Folder[];  // Change this line from optional to required
+  subFolders: Folder[]; 
   quotes?: Quote[];
   createdAt: Date;
   updatedAt: Date;

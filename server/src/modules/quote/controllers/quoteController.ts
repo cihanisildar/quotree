@@ -13,11 +13,12 @@ export class QuoteController {
 
   public createQuote = async (req: Request, res: Response): Promise<void> => {
     try {
-      const { userId, folderId, content } = req.body;
+      const { userId, folderId, content, tagIds } = req.body;
       const quote: Quote = await this.quoteService.createQuote(
         userId,
         folderId,
-        content
+        content,
+        tagIds
       );
       res.status(201).json(quote);
     } catch (error: any) {

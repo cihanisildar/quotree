@@ -1,6 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -11,15 +8,16 @@ datasource db {
 }
 
 model User {
-  id        Int       @id @default(autoincrement())
-  email     String    @unique
-  password  String
-  tier      UserTier  @default(BASIC)
-  folders   Folder[]
-  tokens    Token[]
-  quotes    Quote[]
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
+  id            Int       @id @default(autoincrement())
+  email         String    @unique
+  password      String
+  tier          UserTier  @default(BASIC)
+  folders       Folder[]
+  tokens        Token[]
+  quotes        Quote[]
+  tags          Tag[]     // Custom tags associated with the user
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
 }
 
 model Folder {
@@ -42,6 +40,7 @@ model Quote {
   user            User      @relation(fields: [userId], references: [id])
   folderId        Int?
   folder          Folder?   @relation(fields: [folderId], references: [id])
+  tags            Tag[]     // Quotes can have multiple tags
   createdAt       DateTime  @default(now())
   updatedAt       DateTime  @updatedAt
 }
@@ -53,6 +52,26 @@ model Token {
   user      User     @relation(fields: [userId], references: [id])
   expiresAt DateTime
   createdAt DateTime @default(now())
+}
+
+model Tag {
+  id        Int      @id @default(autoincrement())
+  name      String
+  description String?
+  type      TagType  
+  userId    Int?     
+  user      User?    @relation(fields: [userId], references: [id])
+  quotes    Quote[]  
+  color     String? 
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([name, userId]) 
+}
+
+enum TagType {
+  BUILTIN
+  CUSTOM
 }
 
 enum UserTier {

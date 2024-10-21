@@ -32,6 +32,9 @@ export class FolderService {
         quotes: true,
         subFolders: true,
       },
+      orderBy: {
+        createdAt: 'desc',
+      },
     });
   }
 
