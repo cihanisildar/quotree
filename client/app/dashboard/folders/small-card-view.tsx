@@ -22,7 +22,7 @@ export function SmallCardView({ folders, isLoading, error }: SmallCardViewProps)
   }
 
   return (
-    <div className="overflow-y-scroll pt-10">
+    <div className="overflow-y-scroll pt-8">
       <div className="h-[calc(100vh-200px)] px-8 pb-8">
         <div className="max-w-7xl mx-auto">
           <main className="space-y-6">

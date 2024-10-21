@@ -7,17 +7,12 @@ import useSWR from "swr";
 import backgroundLeaves from "../../../../public/leaves.svg";
 import { Folder } from "@/models/Folder";
 import { Badge } from "@/components/ui/badge";
+import { Quote } from "@/models/Quote";
+import { FolderIcon } from "lucide-react";
+import Link from "next/link";
 // Define the valid text align values for CSS
 type TextAlign = "left" | "right" | "center" | "justify";
 type ListType = "ordered" | "bullet";
-
-type Quote = {
-  id: number;
-  content: string;
-  userId: number;
-  folderId: number;
-  folder: Folder;
-};
 
 type QuoteContent = {
   ops: Array<{
@@ -124,6 +119,8 @@ export default function SingleQuotePage() {
     fetcher
   );
 
+  console.log(quote);
+
   if (error)
     return <div className="text-center text-red-500">Failed to load quote</div>;
   if (isLoading) return <Skeleton className="w-full h-64" />;
@@ -132,8 +129,6 @@ export default function SingleQuotePage() {
     return <div className="text-center text-gray-500">No quote found</div>;
 
   const { contentBlocks, dimensions } = parseQuoteContent(quote.content);
-  console.log("Parsed content blocks:", contentBlocks);
-  console.log("Parsed dimensions:", dimensions);
 
   // Initialize background styles
   let backgroundColor = "";
@@ -160,12 +155,40 @@ export default function SingleQuotePage() {
           zIndex: 0,
         }}
       />
-      {/* <div className="absolute left-2 right-2 z-20">{quote.folder.name}</div> */}
+      {quote.folder && (
+        <Link
+          href={`/dashboard/folders/${quote.folder.id}`}
+          className="absolute left-2 top-2 z-20 flex items-center gap-2 bg-gray-50 p-2 rounded-[4px] shadow-sm border border-gray-200 hover:shadow-md transition-shadow duration-200 ease-in-out"
+        >
+          <FolderIcon className="text-gray-600" />
+          <span className="text-sm font-medium text-gray-700">
+            {quote.folder.name}
+          </span>
+        </Link>
+      )}
+
       {/* Content Layer */}
       <div className="relative z-10 flex items-center justify-center min-h-screen p-4">
         {" "}
         <Card className="max-w-2xl w-full bg-white">
           <CardContent className="p-6">
+            {quote.tags && quote.tags.length > 0 && (
+              <div className="absolute top-4 right-4 flex flex-wrap gap-2 text-white justify-end">
+                {quote.tags.map((tag) => (
+                  <Badge
+                    key={tag.id}
+                    variant="outline"
+                    style={{
+                      backgroundColor: tag.color || "gray",
+                      borderColor: tag.color || "gray",
+                    }}
+                    className="text-xs whitespace-nowrap rounded-[4px]"
+                  >
+                    {tag.name}
+                  </Badge>
+                ))}
+              </div>
+            )}
             <div
               className="relative rounded-[8px] p-8 flex"
               style={{

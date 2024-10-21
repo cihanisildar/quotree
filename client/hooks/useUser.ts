@@ -1,7 +1,7 @@
 "use client";
 
 import useSWR from "swr";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import useIsLoggedIn from "../components/context/useIsLoggedIn";
 import { User } from "@/models/User";
@@ -26,8 +26,9 @@ export function useUser() {
   const router = useRouter();
   const pathname = usePathname();
   const { isLoggedIn, setIsLoggedIn } = useIsLoggedIn();
+  const [isInitializing, setIsInitializing] = useState(true);
 
-  const { data, error, mutate } = useSWR<User | null>(
+  const { data, error, mutate, isValidating } = useSWR<User | null>(
     isLoggedIn ? `${process.env.NEXT_PUBLIC_API_URL}/api/users/profile` : null,
     fetcher
   );
@@ -44,11 +45,16 @@ export function useUser() {
     } else if (data && pathname.startsWith("/auth/")) {
       router.push("/dashboard");
     }
+    
+    // Set initializing to false once we have either data or an error
+    if (data !== undefined || error) {
+      setIsInitializing(false);
+    }
   }, [error, data, router, pathname, setIsLoggedIn]);
 
   return {
     user: data,
-    isLoading: !error && !data && isLoggedIn === null,
+    isLoading: isInitializing || (isLoggedIn && !data && !error),
     isError: error,
     mutate,
   };

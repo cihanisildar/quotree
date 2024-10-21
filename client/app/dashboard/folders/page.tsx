@@ -17,6 +17,19 @@ import { SmallCardView } from "./small-card-view";
 import FullPageScrollView from "./full-page-scroll-view";
 import { Grid2X2, Maximize2, Search } from "lucide-react";
 import debounce from "lodash/debounce";
+import {
+  Form,
+  FormControl,
+  FormDescription,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
+import { Textarea } from "@/components/ui/textarea";
+import { z } from "zod";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
 
 type Quote = {
   id: number;
@@ -31,6 +44,17 @@ type Folder = {
   createdAt: Date;
   updatedAt: Date;
 };
+
+const formSchema = z.object({
+  name: z
+    .string()
+    .min(2, "Name must be at least 2 characters")
+    .max(20, "Name must be 20 characters or less"),
+  // description: z
+  //   .string()
+  //   .min(10, "Description must be at least 10 characters")
+  //   .max(200, "Description must be 200 characters or less"),
+});
 
 const fetchFolders = async (url: string, userId: number): Promise<Folder[]> => {
   const response = await fetch(
@@ -65,8 +89,17 @@ export default function SwitchableFolderDashboard() {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [isFullPageView, setIsFullPageView] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const { user } = useUser();
+
+  const form = useForm<z.infer<typeof formSchema>>({
+    resolver: zodResolver(formSchema),
+    defaultValues: {
+      name: "",
+      // description: "",
+    },
+  });
 
   const {
     data: folders,
@@ -77,11 +110,11 @@ export default function SwitchableFolderDashboard() {
     fetchFolders(url, userId)
   );
 
-  const createNewFolder = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (newFolderName.trim() && user) {
+  const onSubmit = async (values: z.infer<typeof formSchema>) => {
+    setIsSubmitting(true);
+    if (user) {
       try {
-        const newFolder = await createFolder(newFolderName.trim(), user.id);
+        const newFolder = await createFolder(values.name.trim(), user.id);
 
         await mutate(async (currentFolders) => {
           return [...(currentFolders || []), newFolder];
@@ -89,7 +122,7 @@ export default function SwitchableFolderDashboard() {
 
         mutate();
 
-        setNewFolderName("");
+        form.reset(); // Reset the form fields
         setIsDialogOpen(false);
         toast({
           title: "Success",
@@ -101,9 +134,41 @@ export default function SwitchableFolderDashboard() {
           description: "Failed to create folder",
           variant: "destructive",
         });
+      } finally {
+        setIsSubmitting(false);
       }
     }
   };
+  // const createNewFolder = async (e: React.FormEvent) => {
+  //   setIsSubmitting(true);
+  //   e.preventDefault();
+  //   if (newFolderName.trim() && user) {
+  //     try {
+  //       const newFolder = await createFolder(newFolderName.trim(), user.id);
+
+  //       await mutate(async (currentFolders) => {
+  //         return [...(currentFolders || []), newFolder];
+  //       }, false);
+
+  //       mutate();
+
+  //       setNewFolderName("");
+  //       setIsDialogOpen(false);
+  //       toast({
+  //         title: "Success",
+  //         description: "Folder created successfully",
+  //       });
+  //     } catch (error) {
+  //       toast({
+  //         title: "Error",
+  //         description: "Failed to create folder",
+  //         variant: "destructive",
+  //       });
+  //     } finally {
+  //       setIsSubmitting(false);
+  //     }
+  //   }
+  // };
 
   // Debounce the search function to avoid excessive re-renders
   const debouncedSearch = useCallback(
@@ -168,31 +233,71 @@ export default function SwitchableFolderDashboard() {
                   New Folder
                 </Button>
               </DialogTrigger>
-              <DialogContent className="bg-white rounded-lg shadow-lg p-6">
+              <DialogContent className="bg-white rounded-lg shadow-lg p-6 max-w-md mx-auto">
                 <DialogHeader>
-                  <DialogTitle className="text-2xl font-semibold text-gray-800">
-                    Create New Folder
+                  <DialogTitle className="text-5xl font-serif h-full font-bold text-gray-800 flex flex-col">
+                    Create Folder
                   </DialogTitle>
                 </DialogHeader>
-                <form
-                  onSubmit={createNewFolder}
-                  className="space-y-4 flex flex-col items-end justify-end"
-                >
-                  <Input
-                    value={newFolderName}
-                    className="rounded-lg border-gray-300 focus:border-green-400 focus:ring-green-400"
-                    onChange={(e) => setNewFolderName(e.target.value)}
-                    placeholder="Enter folder name"
-                    required
-                  />
-                  <Button
-                    variant="default"
-                    type="submit"
-                    className="bg-green-600 hover:bg-green-500 text-white px-6 py-3 rounded-lg transition"
+                <Form {...form}>
+                  <form
+                    onSubmit={form.handleSubmit(onSubmit)}
+                    className="space-y-6"
                   >
-                    Create Folder
-                  </Button>
-                </form>
+                    <FormField
+                      control={form.control}
+                      name="name"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel className="text-sm font-bold text-gray-700">
+                            Name
+                          </FormLabel>
+                          <FormControl>
+                            <Input
+                              placeholder="Enter folder name"
+                              {...field}
+                              className="w-full rounded-[8px] placeholder:text-neutral-400 border border-gray-300 focus:outline-none focus:border-black focus:border-2"
+                            />
+                          </FormControl>
+                          <FormDescription className="text-xs text-gray-500">
+                            Choose a concise and descriptive name for your folder.
+                          </FormDescription>
+                          <FormMessage className="text-sm text-red-500" />
+                        </FormItem>
+                      )}
+                    />
+                    {/* <FormField
+                      control={form.control}
+                      name="description"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel className="text-sm font-bold text-gray-700">
+                            Description
+                          </FormLabel>
+                          <FormControl>
+                            <Textarea
+                              placeholder="Enter tag description"
+                              {...field}
+                              className="w-full rounded-[8px] placeholder:text-neutral-400 px-3 py-2 border border-gray-300 focus:outline-none focus:border-black focus:border-2"
+                            />
+                          </FormControl>
+                          <FormDescription className="text-xs text-gray-500">
+                            Provide a brief explanation of what this tag
+                            represents.
+                          </FormDescription>
+                          <FormMessage className="text-sm text-red-500" />
+                        </FormItem>
+                      )}
+                    /> */}
+                    <Button
+                      type="submit"
+                      disabled={isSubmitting}
+                      className="w-full py-2 px-4 text-white bg-black hover:bg-black/90 rounded-[8px] transition duration-300"
+                    >
+                      {isSubmitting ? "Creating..." : "Create Folder"}
+                    </Button>
+                  </form>
+                </Form>
               </DialogContent>
             </Dialog>
           </div>
@@ -212,11 +317,7 @@ export default function SwitchableFolderDashboard() {
           </div>
         ) : (
           <div
-            className={`${
-              isFullPageView
-                ? "h-[calc(100vh-200px)]"
-                : "h-full"
-            }`}
+            className={`${isFullPageView ? "h-[calc(100vh-200px)]" : "h-full"}`}
           >
             {isFullPageView ? (
               <FullPageScrollView

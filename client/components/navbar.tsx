@@ -38,7 +38,7 @@ const Navbar = () => {
       await mutate(null);
 
       router.push("/");
-      router.refresh();
+      location.reload()
     } catch (error) {
       console.error("Logout failed:", error);
     }

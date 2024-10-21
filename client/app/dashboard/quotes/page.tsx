@@ -28,15 +28,15 @@ function getRealContent(quoteContent: string) {
 
     if (contentObj.ops && Array.isArray(contentObj.ops)) {
       const realContent = contentObj.ops
-        .filter((op: any) => 
-          // Exclude any insert that includes undesired placeholders or image data
-          typeof op.insert === 'string' && 
-          !op.insert.includes("__backgroundImage__") &&
-          !op.insert.includes("__backgroundColor__") &&
-          !op.insert.includes("__dimensions__")
+        .filter(
+          (op: any) =>
+            typeof op.insert === "string" &&
+            !op.insert.includes("__backgroundImage__") &&
+            !op.insert.includes("__backgroundColor__") &&
+            !op.insert.includes("__dimensions__")
         )
         .map((op: any) => op.insert)
-        .join(""); // Join all filtered inserts into a single string
+        .join("");
       return realContent;
     }
   } catch (error) {
@@ -44,7 +44,6 @@ function getRealContent(quoteContent: string) {
   }
   return "";
 }
-
 
 const fetchQuotes = async (userId: number): Promise<Quote[]> => {
   const response = await fetch(
@@ -92,7 +91,6 @@ export default function QuoteDashboard() {
     router.push(`/dashboard/quotes/${quoteId}`);
   };
 
-  // Debounce the search function to avoid excessive re-renders
   const debouncedSearch = useCallback(
     debounce((query: string) => {
       setSearchQuery(query);
@@ -119,25 +117,31 @@ export default function QuoteDashboard() {
   }
 
   return (
-    <div className="mx-auto py-4 h-full">
-      <main className="space-y-6">
-        <div className="flex justify-between items-center px-8">
-          <h2 className="text-4xl font-semibold">Your Quotes</h2>
+    <div className="grainy min-h-screen">
+      <div className="h-screen flex flex-col pb-20 md:pb-14">
+        <div className="relative py-6 px-10 flex flex-col sm:flex-row items-center justify-between gap-6 shadow-md rounded-b-xl">
+          <div className="flex items-center gap-4">
+            <h1 className="text-4xl font-bold text-gray-800 tracking-tight">
+              {filteredQuotes?.length}
+              <span className="text-lg text-gray-500 ml-2">
+                {filteredQuotes?.length === 1 ? "quote" : "quotes"}
+              </span>
+            </h1>
+          </div>
+          <div className="relative flex-1">
+            <Search className="absolute left-2 top-1/2 h-4 w-4 -translate-y-1/2 transform text-gray-500" />
+            <Input
+              type="search"
+              placeholder="Search quotes..."
+              className="pl-8 border-slate-400 rounded-[4px] placeholder:text-slate-400"
+              onChange={handleSearchChange}
+            />
+          </div>
           <Link href="/dashboard/quotes/create">
-            <Button className="bg-green-500 hover:bg-green-500/90 rounded-[8px] text-white">
+            <Button className="bg-green-600 text-white hover:bg-green-500 px-6 py-3 rounded-[8px] font-medium transition shadow-md">
               New Quote
             </Button>
           </Link>
-        </div>
-
-        <div className="relative px-8">
-          <Search className="absolute left-10 top-1/2 h-4 w-4 -translate-y-1/2 transform text-gray-500" />
-          <Input
-            type="search"
-            placeholder="Search quotes..."
-            className="pl-8 border-slate-400 rounded-[4px] placeholder:text-slate-400"
-            onChange={handleSearchChange}
-          />
         </div>
 
         {isLoading ? (
@@ -149,7 +153,7 @@ export default function QuoteDashboard() {
               : "No quotes found. Add your first quote!"}
           </div>
         ) : (
-          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3 overflow-y-auto h-screen px-8 pb-8">
+          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3 overflow-y-auto h-screen px-8 py-8">
             {filteredQuotes?.map((quote) => {
               const folder = folders?.find(
                 (folder: Folder) => folder.id === quote.folderId
@@ -177,7 +181,7 @@ export default function QuoteDashboard() {
             })}
           </div>
         )}
-      </main>
+      </div>
     </div>
   );
 }

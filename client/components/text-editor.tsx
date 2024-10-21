@@ -20,11 +20,10 @@ import {
 } from "./ui/select";
 
 import { cn } from "@/lib/utils";
-import { ImageIcon } from "lucide-react";
-import { MdClose, MdSend } from "react-icons/md";
+import { Check, ImageIcon } from "lucide-react";
+import { MdClose } from "react-icons/md";
 import { PiTextAa } from "react-icons/pi";
 import { Button } from "./ui/button";
-import { Input } from "./ui/input";
 
 type EditorValue = {
   image: File | null;
@@ -383,7 +382,7 @@ const Editor = ({
                     : "bg-[#007a5a] hover:bg-[#007a5a]/80 cursor-pointer text-white"
                 )}
               >
-                <MdSend />
+                <Check />
               </Button>
             )}
           </div>

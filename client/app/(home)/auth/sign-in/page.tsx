@@ -57,7 +57,6 @@ const LoginPage = () => {
       // Update isLoggedIn state
       setIsLoggedIn(true); // Set logged-in state
       await mutate(); // Update user state
-      router.refresh(); // Refresh page to ensure Navbar updates
       router.push("/"); // Redirect to home
       // location.reload();
     } catch (err) {
